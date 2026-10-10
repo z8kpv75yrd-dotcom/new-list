@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Вишлист</title>
+<meta name="description" content="Мой вишлист — список желаний">
+<meta property="og:title" content="Мой вишлист">
+<meta property="og:description" content="Список желаний. Страница всегда показывает актуальный список.">
+<meta name="theme-color" content="#0f1f3d">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎁</text></svg>">
+<style>
+:root{
+  --navy:#0f1f3d; --navy2:#1b3260; --navy3:#2c4a86;
+  --brown:#8a5a33; --brown2:#b07a4a; --brown-soft:#e9d8c2;
+  --white:#fff; --cream:#faf6ef; --line:#e7dccb;
+  --text:#142038; --muted:#6a6f7d;
+  --ok:#2f7a57; --danger:#b3363f;
+  --shadow:0 8px 26px rgba(15,31,61,.09); --radius:18px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--text);
+  font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:0 16px}
+[hidden]{display:none!important}
+
+/* ---------- Шапка ---------- */
+.hero{position:relative;overflow:hidden;color:#fff;padding:52px 0 86px;
+  background:
+    radial-gradient(circle at 85% 15%,rgba(176,122,74,.38),transparent 45%),
+    radial-gradient(circle at 10% 90%,rgba(44,74,134,.7),transparent 50%),
+    linear-gradient(135deg,var(--navy),var(--navy2))}
+.hero::before{content:"";position:absolute;inset:0;
+  background-image:repeating-linear-gradient(45deg,rgba(233,216,194,.07) 0 1px,transparent 1px 16px)}
+.hero .wrap{position:relative;z-index:2}
+.deco{position:absolute;z-index:1;pointer-events:none;opacity:.9;animation:float 7s ease-in-out infinite}
+.deco.d1{top:22px;right:8%;font-size:46px}
+.deco.d2{top:96px;right:22%;font-size:26px;animation-delay:-2s;opacity:.7}
+.deco.d3{bottom:70px;right:5%;font-size:34px;animation-delay:-4s}
+.deco.d4{top:40px;left:55%;font-size:20px;animation-delay:-1s;opacity:.6}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-14px) rotate(5deg)}}
+.wave{position:absolute;left:0;right:0;bottom:-1px;z-index:2;line-height:0}
+.wave svg{display:block;width:100%;height:48px}
+
+.eyebrow{display:inline-block;margin:0 0 10px;padding:4px 12px;border-radius:99px;
+  background:rgba(176,122,74,.28);border:1px solid rgba(233,216,194,.5);
+  color:var(--brown-soft);font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.hero h1{margin:0 0 8px;font-size:clamp(30px,6.5vw,52px);line-height:1.08;letter-spacing:-.02em;
+  font-family:Georgia,"Times New Roman",serif}
+.desc{margin:6px 0 0;max-width:620px;color:#dfe5f2;font-size:17px}
+.hero-actions{margin-top:22px;display:flex;gap:10px;flex-wrap:wrap}
+
+/* Обратный отсчёт */
+.countdown{margin-top:26px}
+.cd-label{margin:0 0 8px;color:var(--brown-soft);font-weight:600}
+.cd-boxes{display:flex;gap:10px;flex-wrap:wrap}
+.cd-box{min-width:68px;padding:10px 12px;text-align:center;border-radius:14px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(233,216,194,.35);backdrop-filter:blur(4px)}
+.cd-box b{display:block;font-size:26px;line-height:1.1;font-family:Georgia,serif;font-variant-numeric:tabular-nums}
+.cd-box span{font-size:12px;color:var(--brown-soft);text-transform:uppercase;letter-spacing:.06em}
+.cd-today{font-size:20px;font-weight:700;color:var(--brown-soft)}
+
+/* ---------- Кнопки ---------- */
+.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--white);color:var(--navy);
+  padding:10px 16px;border-radius:12px;cursor:pointer;transition:transform .12s,box-shadow .2s,background .2s}
+.btn:hover{box-shadow:0 4px 14px rgba(15,31,61,.15)}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.primary{background:var(--navy);border-color:var(--navy);color:#fff}
+.btn.primary:hover{background:var(--navy2)}
+.btn.brown{background:var(--brown);border-color:var(--brown);color:#fff}
+.btn.brown:hover{background:var(--brown2)}
+.btn.light{background:#fff;color:var(--navy);border-color:#fff}
+.btn.ghost{background:transparent;color:#fff;border-color:rgba(233,216,194,.6)}
+.btn.ghost:hover{background:rgba(255,255,255,.1)}
+.btn.small{padding:7px 12px;font-size:14px;border-radius:10px}
+.btn.danger{color:var(--danger)}
+a.btn{text-decoration:none;display:inline-block;text-align:center}
+
+/* ---------- Панель редактора ---------- */
+.adminbar{background:var(--navy);color:#fff;position:sticky;top:0;z-index:6;box-shadow:0 4px 16px rgba(15,31,61,.25)}
+.adminbar .wrap{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+.adm-label{font-weight:700;margin-right:auto;color:var(--brown-soft)}
+.adminbar .btn{border-color:rgba(233,216,194,.4);background:transparent;color:#fff}
+.adminbar .btn.primary{background:var(--brown);border-color:var(--brown)}
+
+/* ---------- Фильтры ---------- */
+main.wrap{margin-top:-30px;position:relative;z-index:3}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;
+  padding:12px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}
+.toolbar input[type=search]{flex:1 1 200px}
+input,select,textarea{font:inherit;color:var(--text);background:#fff;border:1px solid var(--line);
+  border-radius:12px;padding:10px 12px;width:100%;min-width:0}
+.toolbar select{width:auto;flex:0 1 auto}
+input:focus,select:focus,textarea:focus,.btn:focus-visible{outline:2px solid var(--brown2);outline-offset:1px}
+.chk{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted);cursor:pointer}
+.chk input{width:auto;accent-color:var(--brown)}
+
+/* Прогресс */
+.progress{margin:6px 2px 18px}
+.stats{margin:0 0 6px;color:var(--muted);font-size:14px}
+.stats b{color:var(--navy)}
+.track{height:10px;border-radius:99px;background:var(--brown-soft);overflow:hidden}
+.bar{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--brown),var(--brown2));transition:width .8s cubic-bezier(.2,.8,.2,1)}
+
+/* ---------- Карточки ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;
+  box-shadow:var(--shadow);display:flex;flex-direction:column;position:relative;
+  transition:transform .2s,box-shadow .2s;animation:rise .45s both}
+.card:hover{transform:translateY(-4px);box-shadow:0 14px 34px rgba(15,31,61,.16)}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.card.reserved .pic,.card.reserved .body{opacity:.5}
+.card::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:linear-gradient(90deg,var(--navy),var(--brown));opacity:0;transition:opacity .2s}
+.card:hover::after{opacity:1}
+.pic{aspect-ratio:4/3;background:linear-gradient(135deg,var(--brown-soft),#f6ede0);
+  display:grid;place-items:center;font-size:56px;overflow:hidden}
+.pic img{width:100%;height:100%;object-fit:cover;display:block}
+.body{padding:14px 16px 8px;flex:1;display:flex;flex-direction:column;gap:7px}
+.body h3{margin:0;font-size:17px;line-height:1.3;color:var(--navy);overflow-wrap:anywhere}
+.price{font-weight:800;font-size:20px;color:var(--brown);font-family:Georgia,serif}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font-size:12px;padding:3px 10px;border-radius:99px;background:var(--cream);border:1px solid var(--line);color:var(--muted)}
+.chip.p1{background:var(--navy);border-color:var(--navy);color:#fff}
+.chip.p2{background:var(--brown-soft);border-color:var(--brown-soft);color:var(--brown)}
+.note{margin:0;color:var(--muted);font-size:14px;overflow-wrap:anywhere;white-space:pre-line}
+.actions{padding:8px 16px 18px;display:flex;gap:8px;flex-wrap:wrap}
+.ribbon{position:absolute;top:12px;left:12px;background:var(--brown);color:#fff;font-weight:700;font-size:12px;
+  padding:5px 11px;border-radius:99px;z-index:1;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+
+.empty{text-align:center;color:var(--muted);padding:56px 12px}
+.empty .big{font-size:56px}
+.foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-size:13px;padding:34px 16px 44px}
+.foot a{color:var(--brown)}
+
+#toTop{position:fixed;right:16px;bottom:18px;width:46px;height:46px;border-radius:50%;border:none;cursor:pointer;
+  background:var(--navy);color:#fff;font-size:20px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s;z-index:8}
+#toTop.show{opacity:1;pointer-events:auto}
+
+/* ---------- Диалоги ---------- */
+dialog{border:none;border-radius:20px;padding:0;max-width:min(520px,94vw);width:100%;background:#fff;color:var(--text);
+  box-shadow:0 20px 60px rgba(15,31,61,.4)}
+dialog::backdrop{background:rgba(15,31,61,.6)}
+dialog form{padding:22px;display:grid;gap:12px;max-height:88vh;overflow:auto;border-top:5px solid var(--brown)}
+dialog h2{margin:0 0 2px;font-size:22px;color:var(--navy);font-family:Georgia,serif}
+dialog label{display:grid;gap:5px;font-size:14px;font-weight:600;color:var(--navy)}
+dialog label.chk{display:flex;font-weight:500;color:var(--muted)}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dlg-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}
+.hint{margin:0;color:var(--muted);font-size:14px}
+.err{margin:0;color:var(--danger);font-size:14px}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--navy);color:#fff;
+  padding:11px 18px;border-radius:12px;opacity:0;pointer-events:none;transition:.25s;z-index:20;max-width:92vw;text-align:center;
+  border-bottom:3px solid var(--brown2)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.bad{background:var(--danger)}
+
+@media (max-width:520px){
+  .hero{padding:40px 0 80px}
+  .deco.d2,.deco.d3,.deco.d4{display:none}
+  .cd-box{min-width:60px;padding:8px 8px}
+  .cd-box b{font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="deco d1" aria-hidden="true">🎁</span>
+  <span class="deco d2" aria-hidden="true">✨</span>
+  <span class="deco d3" aria-hidden="true">🎀</span>
+  <span class="deco d4" aria-hidden="true">⭐</span>
+  <div class="wrap">
+    <p class="eyebrow" id="owner" hidden></p>
+    <h1 id="title">Вишлист</h1>
+    <p class="desc" id="desc" hidden></p>
+
+    <div class="countdown" id="countdown" hidden>
+      <p class="cd-label" id="cdLabel"></p>
+      <div class="cd-boxes" id="cdBoxes">
+        <div class="cd-box"><b id="cdD">0</b><span>дней</span></div>
+        <div class="cd-box"><b id="cdH">0</b><span>часов</span></div>
+        <div class="cd-box"><b id="cdM">0</b><span>минут</span></div>
+        <div class="cd-box"><b id="cdS">0</b><span>секунд</span></div>
+      </div>
+      <div class="cd-today" id="cdToday" hidden>🎉 Это случится сегодня!</div>
+    </div>
+
+    <div class="hero-actions">
+      <button class="btn light" id="shareBtn" type="button">🔗 Поделиться</button>
+      <button class="btn ghost" id="adminBtn" type="button">🔒 Редактировать</button>
+    </div>
+  </div>
+  <div class="wave" aria-hidden="true">
+    <svg viewBox="0 0 1200 48" preserveAspectRatio="none"><path d="M0,28 C200,60 400,0 600,24 C800,48 1000,4 1200,26 L1200,48 L0,48 Z" fill="#faf6ef"/></svg>
+  </div>
+</header>
+
+<div class="adminbar" id="adminBar" hidden>
+  <div class="wrap">
+    <span class="adm-label">✏️ Режим редактирования</span>
+    <button class="btn small primary" id="addBtn" type="button">+ Добавить</button>
+    <button class="btn small" id="settingsBtn" type="button">⚙ О списке</button>
+    <button class="btn small" id="logoutBtn" type="button">Выйти</button>
+  </div>
+</div>
+
+<main class="wrap">
+  <section class="toolbar">
+    <input type="search" id="search" placeholder="Поиск по списку…" aria-label="Поиск">
+    <select id="catFilter" aria-label="Категория"></select>
+    <select id="sort" aria-label="Сортировка">
+      <option value="priority">Сначала самое желанное</option>
+      <option value="new">Сначала новые</option>
+      <option value="price-asc">Цена: по возрастанию</option>
+      <option value="price-desc">Цена: по убыванию</option>
+    </select>
+    <label class="chk"><input type="checkbox" id="hideReserved"> Скрыть подаренные</label>
+  </section>
+
+  <div class="progress" id="progress" hidden>
+    <p class="stats" id="stats"></p>
+    <div class="track"><div class="bar" id="progBar"></div></div>
+  </div>
+
+  <section class="grid" id="grid" aria-live="polite"></section>
+  <div class="empty" id="empty" hidden></div>
+</main>
+
+<footer class="wrap foot">
+  <span id="updated"></span>
+  <a id="repoLink" href="#" target="_blank" rel="noopener noreferrer" hidden>Репозиторий</a>
+</footer>
+
+<button id="toTop" type="button" aria-label="Наверх">↑</button>
+
+<!-- Вход -->
+<dialog id="loginDlg">
+  <form id="loginForm" method="dialog">
+    <h2>Вход в режим редактирования</h2>
+    <p class="hint">Вставьте GitHub-токен с доступом <b>Contents: Read and write</b> к этому репозиторию. Токен хранится только в вашем браузере.</p>
+    <label>Токен
+      <input type="password" id="tokenInput" autocomplete="off" placeholder="github_pat_…" required>
+    </label>
+    <p class="err" id="loginErr" hidden></p>
+    <div class="dlg-actions">
+      <button class="btn" type="button" data-close>Отмена</button>
+      <button class="btn primary" type="submit" id="loginSubmit">Войти</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Редактор подарка -->
+<dialog id="editorDlg">
+  <form id="editForm" method="dialog">
+    <h2 id="editTitle">Новый подарок</h2>
+    <input type="hidden" name="id">
+    <label>Название *
+      <input name="title" required maxlength="140" placeholder="Например: Наушники Sony WH-1000XM5">
+    </label>
+    <label>Ссылка на товар
+      <input name="url" type="url" inputmode="url" placeholder="https://…">
+    </label>
+    <label>Ссылка на картинку
+      <input name="image" type="url" inputmode="url" placeholder="https://…/photo.jpg">
+    </label>
+    <div class="row">
+      <label>Цена
+        <input name="price" type="number" min="0" step="any" inputmode="decimal" placeholder="0">
+      </label>
+      <label>Валюта
+        <select name="currency">
+          <option>₽</option><option>$</option><option>€</option><option>₸</option><option>Br</option><option>₴</option>
+        </select>
+      </label>
+    </div>
+    <div class="row">
+      <label>Категория
+        <input name="category" list="catList" maxlength="40" placeholder="Техника, Книги…">
+        <datalist id="catList"></datalist>
+      </label>
+      <label>Насколько хочу
+        <select name="priority">
+          <option value="1">🔥 Очень хочу</option>
+          <option value="2" selected>⭐ Хочу</option>
+          <option value="3">✨ Было бы здорово</option>
+        </select>
+      </label>
+    </div>
+    <label>Заметка (размер, цвет, модель…)
+      <textarea name="note" rows="3" maxlength="500"></textarea>
+    </label>
+    <label class="chk"><input type="checkbox" name="reserved"> Уже подарено / забронировано</label>
+    <div class="dlg-actions">
+      <button class="btn" type="button" data-close>Отмена</button>
+      <button class="btn primary" type="submit" id="editSubmit">Сохранить</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- О списке -->
+<dialog id="settingsDlg">
+  <form id="settingsForm" method="dialog">
+    <h2>О списке</h2>
+    <label>Название
+      <input name="title" required maxlength="80">
+    </label>
+    <label>Чей вишлист
+      <input name="owner" maxlength="60" placeholder="Имя">
+    </label>
+    <label>Описание
+      <textarea name="description" rows="3" maxlength="300" placeholder="Например: ко дню рождения"></textarea>
+    </label>
+    <div class="row">
+      <label>Событие
+        <input name="eventName" maxlength="60" placeholder="День рождения">
+      </label>
+      <label>Дата события
+        <input name="eventDate" type="date">
+      </label>
+    </div>
+    <p class="hint">Если указать дату, в шапке появится обратный отсчёт. Оставьте пустой, чтобы скрыть.</p>
+    <div class="dlg-actions">
+      <button class="btn" type="button" data-close>Отмена</button>
+      <button class="btn primary" type="submit" id="settingsSubmit">Сохранить</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
